@@ -1,0 +1,123 @@
+cabal-version:       2.4
+name:                bug
+version:             0.1.0.0
+license:             NONE
+author:              Platonic.Systems
+maintainer:          isaac.shapira@platonic.systems
+
+
+common shared
+  default-language: Haskell2010
+  ghc-options:
+    -Wall
+    -Werror
+    -Wcompat
+    -Wno-unused-binds
+    -Wno-unused-matches
+    -Wno-dodgy-exports
+    -fwarn-redundant-constraints
+    -fwarn-incomplete-uni-patterns
+    -fwarn-tabs
+    -fwarn-incomplete-record-updates
+    -fwarn-identities
+    -fwarn-unused-matches
+
+
+common ghcjs-options
+  ghcjs-options:
+    -O2
+    -fno-warn-missing-home-modules
+    -Wall
+    -Werror
+    -Wcompat
+    -Wno-unused-binds
+    -Wno-unused-matches
+    -Wno-dodgy-exports
+    -Wno-unused-binds
+    -fwarn-redundant-constraints
+    -fwarn-incomplete-uni-patterns
+    -fwarn-tabs
+    -fwarn-incomplete-record-updates
+    -fwarn-identities
+    -fwarn-unused-matches
+
+
+executable server
+  import: shared
+  hs-source-dirs: ./lib, ./run
+  main-is: Server.hs
+  if impl(ghcjs)
+    buildable: False
+  else
+    buildable: True
+  other-modules:
+    Bug.Server
+    Bug.SPA
+  build-depends:
+     base ^>=4.12.0.0
+   , Shpadoinkle
+   , Shpadoinkle-backend-static
+   , Shpadoinkle-html
+   , Shpadoinkle-router
+   , servant
+   , servant-server
+   , wai
+   , warp
+   , text
+
+
+executable client
+  import: shared, ghcjs-options
+  hs-source-dirs: ./lib, ./run
+  main-is: Client.hs
+  other-modules:
+    Bug.Client
+    Bug.SPA
+  build-depends:
+     base ^>=4.12.0.0
+   , Shpadoinkle
+   , Shpadoinkle-backend-snabbdom
+   , Shpadoinkle-html
+   , Shpadoinkle-router
+   , servant
+   , servant-client-core
+   , jsaddle
+   , text
+
+  if impl(ghcjs)
+    buildable: True
+  else
+    buildable: False
+
+
+executable dev
+  import: shared, ghcjs-options
+  hs-source-dirs: ./lib, ./run
+  main-is: Dev.hs
+  if impl(ghcjs)
+    buildable: False
+  else
+    buildable: True
+  other-modules:
+    Bug.Client
+    Bug.Server
+    Bug.SPA
+  build-depends:
+     base ^>=4.12.0.0
+   , Shpadoinkle
+   , Shpadoinkle-backend-snabbdom
+   , Shpadoinkle-html
+   , Shpadoinkle-router
+   , servant
+   , servant-client-core
+   , jsaddle
+   , text
+
+  if impl(ghcjs)
+    build-depends:
+  else
+    build-depends:
+       servant-server
+     , wai
+     , warp
+

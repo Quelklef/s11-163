@@ -1,0 +1,7 @@
+result*
+dist*
+server
+client
+pg/
+**/config.toml
+result
